@@ -7,12 +7,14 @@ from langchain_groq import ChatGroq
 from langchain_core.output_parsers import StrOutputParser
 from langchain_core.prompts import ChatPromptTemplate
 from langchain_core.runnables import RunnablePassthrough
+from langchain_core.vectorstores import InMemoryVectorStore
 from langserve import add_routes
 from langchain_ollama import OllamaEmbeddings
 from langchain_text_splitters import RecursiveCharacterTextSplitter
 
 """
 A Groq API key and Langsmith API key is needed in the .env file before the below code is called.
+Additionally, to use Ollama's embeddings, Ollama must be installed and the llama3 model must be pulled.
 """
 load_dotenv()
 
@@ -36,10 +38,10 @@ loader = WebBaseLoader(
 docs = loader.load()
 text_splitter = RecursiveCharacterTextSplitter(chunk_size=1000, chunk_overlap=200)
 splits = text_splitter.split_documents(docs)
-embeddings = OllamaEmbeddings(
-    model="llama3",
-)
-vectorstore = Chroma.from_documents(documents=splits, embedding=embeddings)
+embeddings = OllamaEmbeddings(model="llama3",)
+# this can be changed in the future to have a persistent vector store that is loaded from memory.
+vectorstore = InMemoryVectorStore(embedding=embeddings)
+vectorstore.add_documents(documents=docs)
 retriever = vectorstore.as_retriever()
 
 # function for formatting docs
