@@ -13,8 +13,10 @@ from langchain_ollama import OllamaEmbeddings
 from langchain_text_splitters import RecursiveCharacterTextSplitter
 
 """
+**PLEASE READ BEFORE YOU USE**
 A Groq API key and Langsmith API key is needed in the .env file before the below code is called.
 Additionally, to use Ollama's embeddings, Ollama must be installed and the llama3 model must be pulled.
+To use this code, you need to run this python script, then run sanpleappclient.py on a separate terminal. After it's run, just type in your prompt into the sampleappclient terminal and you will receive a response.
 """
 load_dotenv()
 
@@ -33,7 +35,12 @@ parser = StrOutputParser()
 # Initialise DB   TODO: get this part to work cos it sure as hell isn't right now, replace chroma or embedding maybe
 # bs4_strainer = bs4.SoupStrainer(class_=("post-title", "post-header", "post-content"))
 loader = WebBaseLoader(
-    web_paths = ("https://www.medicalnewstoday.com/articles/165749",),
+    web_paths = ("https://www.cgh.com.sg/patient-care/conditions-treatments/jaundice",
+                 "https://www.singhealth.com.sg/patient-care/conditions-treatments/jaundice", 
+                 "https://www.sgh.com.sg/patient-care/conditions-treatments/jaundice", 
+                 "https://my.clevelandclinic.org/health/symptoms/15367-adult-jaundice", 
+                 "https://www.healthxchange.sg/digestive-system/liver/obstructive-jaundice-symptoms-treatment-options", 
+                 "https://www.drthngyongxian.com/jaundice-treatment-singapore/"),
 )
 docs = loader.load()
 text_splitter = RecursiveCharacterTextSplitter(chunk_size=1000, chunk_overlap=200)
