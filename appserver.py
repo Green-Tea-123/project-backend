@@ -16,7 +16,7 @@ from langchain_text_splitters import RecursiveCharacterTextSplitter
 **PLEASE READ BEFORE YOU USE**
 A Groq API key and Langsmith API key is needed in the .env file before the below code is called.
 Additionally, to use Ollama's embeddings, Ollama must be installed and the llama3 model must be pulled.
-To use this code, you need to run this python script, then run sanpleappclient.py on a separate terminal. After it's run, just type in your prompt into the sampleappclient terminal and you will receive a response.
+To use this code, you need to run this python script, then run sampleappclient.py on a separate terminal. After it's run, just type in your prompt into the sampleappclient terminal and you will receive a response.
 """
 load_dotenv()
 
@@ -24,7 +24,7 @@ load_dotenv()
 model = ChatGroq(model="llama3-8b-8192")
 
 # Initialise prompt template
-promptTemplate = ChatPromptTemplate.from_template("You are an assistant for question-answering tasks. Use the following pieces of retrieved context to answer the question. If you don't know the answer, just say that you don't know. Use three sentences maximum and keep the answer concise.\
+promptTemplate = ChatPromptTemplate.from_template("You are an assistant for question-answering tasks. Use the following pieces of retrieved context to answer the question. If you don't know the answer, just say that you don't know. Use five sentences maximum and keep the answer concise.\
 Question: {question} \
 Context: {context} \
 Answer:")
@@ -36,10 +36,10 @@ parser = StrOutputParser()
 # bs4_strainer = bs4.SoupStrainer(class_=("post-title", "post-header", "post-content"))
 loader = WebBaseLoader(
     web_paths = ("https://www.cgh.com.sg/patient-care/conditions-treatments/jaundice",
-                 "https://www.singhealth.com.sg/patient-care/conditions-treatments/jaundice", 
-                 "https://www.sgh.com.sg/patient-care/conditions-treatments/jaundice", 
-                 "https://my.clevelandclinic.org/health/symptoms/15367-adult-jaundice", 
-                 "https://www.healthxchange.sg/digestive-system/liver/obstructive-jaundice-symptoms-treatment-options", 
+#                 "https://www.singhealth.com.sg/patient-care/conditions-treatments/jaundice", 
+#                 "https://www.sgh.com.sg/patient-care/conditions-treatments/jaundice", 
+#                 "https://my.clevelandclinic.org/health/symptoms/15367-adult-jaundice", 
+#                 "https://www.healthxchange.sg/digestive-system/liver/obstructive-jaundice-symptoms-treatment-options", 
                  "https://www.drthngyongxian.com/jaundice-treatment-singapore/"),
 )
 docs = loader.load()
@@ -49,6 +49,7 @@ embeddings = OllamaEmbeddings(model="llama3",)
 # this can be changed in the future to have a persistent vector store that is loaded from memory.
 vectorstore = InMemoryVectorStore(embedding=embeddings)
 vectorstore.add_documents(documents=docs)
+# TODO: implement a max retrieval for the tokens
 retriever = vectorstore.as_retriever()
 
 # function for formatting docs

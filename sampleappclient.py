@@ -11,5 +11,5 @@ while True:
     prompt = input()
     if prompt == "exit":
         break
-    result = remote_chain.invoke(input)
+    result = remote_chain.invoke(prompt)
     print(result)
